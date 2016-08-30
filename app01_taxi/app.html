@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TAXI app</title>
+    <script src="tools/enums.js"></script>
+    <script src="tools/generator.js"></script>
+    <script src="controller/companyController.js"></script>
+    <script src="controller/gameController.js"></script>
+    <script src="controller/viewController.js"></script>
+    <script src="model/entity.js"></script>
+    <script src="view/sprite.js"></script>
+</head>
+<body>
+<script>
+    var _currentRenderTime = 0;
+    var _deltaRenderTime = 0;
+    var _lastRenderTime = 0;
+    var _prevTickTime = 0;
+    var _canvas, _context, _gameController;
+    var _btClientAdd, _btDriverAdd, _btDriverRemove, _btTickTimeIncrement, _btTickTimeDecrement, _btPrintInfo, _gameInfoDiv;
+
+
+    createCanvas();
+    initGame();
+    render();
+
+    window.onload = function()
+    {
+        var buttonsDiv = document.createElement("div");
+        _gameInfoDiv = document.createElement("div");
+        document.body.appendChild( _gameInfoDiv );
+        document.body.appendChild( buttonsDiv );
+
+        buttonsDiv.style.width = WIDTH + "px";
+        buttonsDiv.style.height = "100%";
+        buttonsDiv.style.margin = "0";
+
+
+        _gameInfoDiv.style.fontFamily = 'Open Sans, sans-serif';
+        _gameInfoDiv.style.width = WIDTH + "px";
+        _gameInfoDiv.style.height = "100%";
+        _gameInfoDiv.style.marginTop = "50";
+        _gameInfoDiv.style.padding = "10px";
+        _gameInfoDiv.style.backgroundImage = 'url("resources/taxi_info_bg5.jpg")';
+        _gameInfoDiv.style.backgroundRepeat = 'no-repeat';
+        _gameInfoDiv.style.color = "#fff";
+
+        _btClientAdd = createButton(buttonsDiv, 'add Client', onBtClick);
+        _btDriverAdd = createButton(buttonsDiv, 'add Driver', onBtClick);
+        _btDriverRemove = createButton(buttonsDiv, 'rem Driver', onBtClick);
+        _btTickTimeIncrement = createButton(buttonsDiv, 'inc Game Speed', onBtClick);
+        _btTickTimeDecrement = createButton(buttonsDiv, 'dec Game Speed', onBtClick);
+        _btPrintInfo = createButton(buttonsDiv, 'print Game Info in console', onBtClick);
+    };
+
+    function updateGameInfoDiv()
+    {
+        if (_gameInfoDiv)
+        {
+            var str = _gameController.companyController.company.getInfo();
+            var gameDelay = Math.round(TICK_TIME / 1e3 * 60);
+            str += '\nTick time (delay): ' + gameDelay + ' ms';
+            if (str != _gameInfoDiv.innerText)
+                _gameInfoDiv.innerText = str;
+        }
+    }
+
+    function initGame()
+    {
+        _gameController = new GameController(_context, WIDTH, HEIGHT, UNIT_RECT_SIDE, UNIT_RECT_SIDE);
+        _gameController.initControllers();
+//        _gameController.companyController.runTimerClientsGeneration();
+    }
+
+
+    function createCanvas()
+    {
+        _canvas = document.createElement("canvas");
+        _canvas.width = WIDTH;
+        _canvas.height = HEIGHT;
+        _context = _canvas.getContext("2d");
+        document.body.appendChild( _canvas );
+    }
+
+    function createButton(context, value, onClickHandler){
+        var button = document.createElement("input");
+        button.type = "button";
+        button.value = value;
+        button.onclick = onClickHandler;
+        context.appendChild(button);
+        return button;
+    }
+
+    function render()
+    {
+        _currentRenderTime = Date.now();
+        _deltaRenderTime = _currentRenderTime - _lastRenderTime;
+
+        globalUpdate();
+        globalRender();
+        requestAnimationFrame( render );
+
+        _lastRenderTime = _currentRenderTime;
+    }
+
+
+    function globalRender()
+    {
+        _context.clearRect(0, 0, WIDTH, HEIGHT);
+        _context.strokeRect(0, 0, WIDTH, HEIGHT);
+
+        _gameController.draw();
+    }
+
+
+    function globalUpdate()
+    {
+        if (_prevTickTime < TICK_TIME)
+        {
+            _prevTickTime += _deltaRenderTime;
+        }
+        else
+        {
+            _prevTickTime = 0;
+            _gameController.update();
+            updateGameInfoDiv();
+        }
+    }
+
+    function onBtClick(event)
+    {
+        var tick;
+
+        switch (event.target)
+        {
+            case _btClientAdd:
+            {
+                if(_gameController)
+                    _gameController.clientAdd();
+                break;
+            }
+            case _btDriverAdd:
+            {
+                if(_gameController)
+                    _gameController.driverAdd();
+                break;
+            }
+            case _btDriverRemove:
+            {
+                if(_gameController)
+                    _gameController.driverRemove();
+                break;
+            }
+            case _btTickTimeIncrement:
+            {
+                tick = TICK_TIME - TICK_TIME_CHANGE_STEP;
+                if (tick >= TICK_TIME_MIN)
+                    TICK_TIME = tick;
+                break;
+            }
+            case _btTickTimeDecrement:
+            {
+                tick = TICK_TIME + TICK_TIME_CHANGE_STEP;
+                if (tick <= TICK_TIME_MAX)
+                    TICK_TIME = tick;
+                break;
+            }
+            case _btPrintInfo:
+            {
+                if(_gameController)
+                    _gameController.printGameInfoInConsole();
+                break;
+            }
+        }
+    }
+
+</script>
+</body>
+</html>
