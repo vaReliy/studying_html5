@@ -39,7 +39,7 @@ CompanyController.prototype.getFreeClients = function()
 	}
 	return freeClients;
 };
-CompanyController.prototype.actualityFreeClients = function()
+CompanyController.prototype.actualityActiveClients = function()
 {
 	var arr = this.company.clients;
 	var actualClients = [];

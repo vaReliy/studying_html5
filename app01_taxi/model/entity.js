@@ -51,10 +51,9 @@ Company.prototype.getDrivers = function()
 {
 	return this.drivers;
 };
-Company.prototype.getDistance = function(posA, posB)
+Company.prototype.getTotalMoney = function()
 {
-	var x1 = posA.x, y1 = posA.y, x2 = posB.x, y2 = posB.y;
-	return Math.sqrt( (Math.pow( (x2 - x1), 2 )) + (Math.pow( (y2 - y1), 2 )) );
+	return this.totalMoney;
 };
 Company.prototype.toString = function()
 {
@@ -94,8 +93,8 @@ Company.prototype.printInfo = function()
 Company.prototype.getInfo = function()
 {
 	var str = '"' + this.id + '", $: ' + this.totalMoney.toFixed(2);
-	str += '\nTotal clients:\t' + this.clients.length + ', ';
-	str += 'Total drivers:\t' + this.drivers.length + '.';
+	str += '\nActive clients:\t' + this.clients.length + ', ';
+	str += 'Active drivers:\t' + this.drivers.length + '.';
 	return str;
 };
 Company.prototype.addMoney = function(value)

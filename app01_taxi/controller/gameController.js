@@ -68,6 +68,7 @@ GameController.prototype.runTimerClientsGeneration = function()
 GameController.prototype.update = function()
 {
 	var companyController = this.companyController;
+	companyController.actualityActiveClients();
 	var hasFreeClient = companyController.hasFreeClients();
 	var hasFreeDriver = companyController.hasFreeDrivers();
 	var hasMovedDrivers = companyController.hasMovedDriver();
@@ -77,12 +78,6 @@ GameController.prototype.update = function()
 	{
 		var freeDrivers = companyController.getFreeDrivers();
 		var freeClients = companyController.getFreeClients();
-
-		if (freeClients.length > 50)
-		{
-			companyController.actualityFreeClients();
-			freeClients = companyController.getFreeClients();
-		}
 
 		var less = freeDrivers.length - freeClients.length <= 0 ? freeDrivers.length : freeClients.length;
 		for(i=0; i < less; i++)
@@ -160,5 +155,7 @@ GameController.prototype.driverRemove = function()
 {
 	var drivers = this.companyController.company.drivers;
 	var index = this.generator.getRandomIntValue(0, drivers.length);
+	var driver = this.companyController.company.drivers[index];
+	driver.getClient().setIsActive(false);
 	this.companyController.company.drivers.splice(index, 1);
 };
