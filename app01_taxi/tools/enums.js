@@ -9,7 +9,7 @@ const HEIGHT = 800;
 const UNIT_RECT_SIDE = 25;
 
 const CLIENT_START_CONT = 35;
-const DEIVER_COUNT = 5;
+const DRIVER_COUNT = 5;
 
 const BASE_FARE_DISTANCE = 6;
 const BASE_FARE_COST = 150;

@@ -34,7 +34,7 @@ GameController.prototype.generateCompany = function()
 	for (var i=0; i < CLIENT_START_CONT; i++)
 	{
 		clients.push(this.generateOneClient());
-		if(i < DEIVER_COUNT)
+		if(i < DRIVER_COUNT)
 			drivers.push(this.generateOneDriver());
 
 	}
@@ -158,4 +158,8 @@ GameController.prototype.driverRemove = function()
 	var driver = this.companyController.company.drivers[index];
 	driver.getClient().setIsActive(false);
 	this.companyController.company.drivers.splice(index, 1);
+};
+GameController.prototype.saveGame = function()
+{
+	return JSON.stringify(this);
 };
