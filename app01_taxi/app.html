@@ -71,9 +71,9 @@
 
     function initGame()
     {
-        if(window.localStorage.hasOwnProperty("game"))
+        if(window.localStorage.hasOwnProperty(LS_GAME))
         {
-            var savedGame = window.localStorage["game"];
+            var savedGame = window.localStorage[LS_GAME];
             var game = JSON.parse(savedGame);
 
             var i, savedClients, savedDrivers, restoredClients = [], restoredDrivers = [];
@@ -115,9 +115,9 @@
             _gameController.companyController.company.drivers = restoredDrivers;
             _gameController.companyController.company.totalMoney = game.companyController.company.totalMoney;
 
-            if(window.localStorage.hasOwnProperty("tick_time"))
+            if(window.localStorage.hasOwnProperty(LS_GAME_TT))
             {
-                TICK_TIME = window.localStorage["tick_time"];
+                TICK_TIME = window.localStorage[LS_GAME_TT];
             }
         }
         else
@@ -230,8 +230,8 @@
             {
                 if(_gameController)
                 {
-                    window.localStorage["game"] = _gameController.saveGame();
-                    window.localStorage["tick_time"] = TICK_TIME;
+                    window.localStorage[LS_GAME] = _gameController.saveGame();
+                    window.localStorage[LS_GAME_TT] = TICK_TIME;
                 }
                 break;
             }

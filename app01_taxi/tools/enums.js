@@ -17,6 +17,9 @@ const BASE_FARE_COST = 150;
 const FARE_PART_DRIVER = 2/3;
 const FARE_PART_COMPANY = 1/3;
 
+const LS_GAME = 'game';
+const LS_GAME_TT = 'tick_time';
+
 const NAMES = [
 	"Julieta", "Arlean", "Caitlin", "Jacqulyn", "Alycia", "Hoa", "Tess", "Latonya", "Hortense", "Madelene", "Justa", "Santina", "Nicki", "Sueann", "Karima", "Trista", "Pilar", "Sally", "Ema", "Freddy", "Mitch", "Erick", "Maryellen", "Sona", "Sabra", "Meridith", "Robyn", "Kenny", "Lelia", "Zulma", "Trish", "Irina", "Adelaide", "Jonathan", "Roxann", "Jinny", "Adele", "Caitlyn", "Clorinda", "Antwan", "Kimberlie", "Pamula", "Velva", "Georgia", "Sharda", "Milly", "Annalisa", "Sanford", "Dominque", "Allene"
 ];
