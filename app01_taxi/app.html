@@ -18,7 +18,8 @@
     var _lastRenderTime = 0;
     var _prevTickTime = 0;
     var _canvas, _context, _gameController;
-    var _btClientAdd, _btDriverAdd, _btDriverRemove, _btTickTimeIncrement, _btTickTimeDecrement, _btPrintInfo, _gameInfoDiv;
+    var _btClientAdd, _btDriverAdd, _btDriverRemove, _btTickTimeIncrement, _btTickTimeDecrement, _btPrintInfo,
+            _btSaveGame, _btClearData, _gameInfoDiv;
 
 
     createCanvas();
@@ -52,6 +53,8 @@
         _btTickTimeIncrement = createButton(buttonsDiv, 'inc Game Speed', onBtClick);
         _btTickTimeDecrement = createButton(buttonsDiv, 'dec Game Speed', onBtClick);
         _btPrintInfo = createButton(buttonsDiv, 'print Game Info in console', onBtClick);
+        _btSaveGame = createButton(buttonsDiv, 'save GAME', onBtClick);
+        _btClearData = createButton(buttonsDiv, 'clear LS data', onBtClick);
     };
 
     function updateGameInfoDiv()
@@ -68,9 +71,60 @@
 
     function initGame()
     {
-        _gameController = new GameController(_context, WIDTH, HEIGHT, UNIT_RECT_SIDE, UNIT_RECT_SIDE);
-        _gameController.initControllers();
-//        _gameController.companyController.runTimerClientsGeneration();
+        if(window.localStorage.hasOwnProperty("game"))
+        {
+            var savedGame = window.localStorage["game"];
+            var game = JSON.parse(savedGame);
+
+            var i, savedClients, savedDrivers, restoredClients = [], restoredDrivers = [];
+            var clArr = game.companyController.company.clients;
+            for (i=0; i < clArr.length; i++)
+            {
+                var cl = clArr[i];
+                savedClients = new ClientUnit(cl.id, cl.positionStart, cl.positionDestination);
+                savedClients.inProgress = cl.inProgress;
+                savedClients.isActive = cl.isActive;
+                savedClients.isWaitTaxi = cl.isWaitTaxi;
+                restoredClients.push(savedClients);
+            }
+            var drArrWC = game.companyController.company.drivers;
+            for (i=0; i < drArrWC.length; i++)
+            {
+                var dr = drArrWC[i];
+                savedDrivers = new TaxiUnit(dr.id, dr.currentPosition, dr.speed, dr.money, dr.fuelPerTick);
+                savedDrivers.destinationPosition = dr.destinationPosition;
+                savedDrivers.isAvailable = dr.isAvailable;
+                savedDrivers.isMoved = dr.isMoved;
+                savedDrivers.callback = dr.callback;
+                cl = new ClientUnit(dr.client.id, dr.client.positionStart, dr.client.positionDestination);
+                cl.inProgress = dr.client.inProgress;
+                cl.isActive = dr.client.isActive;
+                cl.isWaitTaxi = dr.client.isWaitTaxi;
+                /*var index = restoredClients.indexOf(cl);
+                if(index != 1)
+                {
+                    savedDrivers.client = restoredClients[index];
+                }*/
+                savedDrivers.client = cl;
+                restoredDrivers.push(savedDrivers);
+            }
+
+            _gameController = new GameController(_context, WIDTH, HEIGHT, UNIT_RECT_SIDE, UNIT_RECT_SIDE);
+            _gameController.initControllers();
+            _gameController.companyController.company.clients = restoredClients;
+            _gameController.companyController.company.drivers = restoredDrivers;
+            _gameController.companyController.company.totalMoney = game.companyController.company.totalMoney;
+
+            if(window.localStorage.hasOwnProperty("tick_time"))
+            {
+                TICK_TIME = window.localStorage["tick_time"];
+            }
+        }
+        else
+        {
+            _gameController = new GameController(_context, WIDTH, HEIGHT, UNIT_RECT_SIDE, UNIT_RECT_SIDE);
+            _gameController.initControllers();
+        }
     }
 
 
@@ -170,6 +224,20 @@
             {
                 if(_gameController)
                     _gameController.printGameInfoInConsole();
+                break;
+            }
+            case _btSaveGame:
+            {
+                if(_gameController)
+                {
+                    window.localStorage["game"] = _gameController.saveGame();
+                    window.localStorage["tick_time"] = TICK_TIME;
+                }
+                break;
+            }
+            case _btClearData:
+            {
+                    window.localStorage.clear();
                 break;
             }
         }
