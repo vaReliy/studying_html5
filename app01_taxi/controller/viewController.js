@@ -13,6 +13,18 @@ function ViewController(scene, companyController)
 	this.images = {};
 }
 ViewController.prototype = Object.create(null);
+ViewController.prototype.toJSON = function()
+{
+	return {
+		__type:		'ViewController',
+		scene:		this.scene,
+		resources:	this.resources,
+		images:		this.images
+	};
+};
+ViewController.revive = function(data) {
+	return new ViewController(data.scene, data.companyController);
+};
 ViewController.prototype.draw = function()
 {
 	//var c = this.scene.context;

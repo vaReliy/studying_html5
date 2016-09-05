@@ -4,6 +4,17 @@ function CompanyController(company)
 	this.driversWithClients = [];
 }
 CompanyController.prototype = Object.create(null);
+CompanyController.prototype.toJSON = function()
+{
+	return {
+		__type:					'CompanyController',
+		company:				this.company,
+		driversWithClients:		this.driversWithClients
+	};
+};
+CompanyController.revive = function(data) {
+	return new CompanyController(data.company);
+};
 CompanyController.prototype.getDriversWithClients = function()
 {
 	return this.driversWithClients;

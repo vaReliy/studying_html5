@@ -35,6 +35,21 @@ function Company(id, clients, drivers, baseFareDistance, baseFareCost)
 	this.totalMoney = 0;
 }
 Company.prototype = Object.create(null);
+Company.prototype.toJSON = function()
+{
+    return {
+        __type:            'Company',
+        id:                 this.id,
+        clients:            this.clients,
+        drivers:            this.drivers,
+        baseFareDistance:   this.baseFareDistance,
+        baseFareCost:       this.baseFareCost,
+        totalMoney:         this.totalMoney
+    };
+};
+Company.revive = function(data) {
+    return new Company(data.id, data.clients, data.drivers, data.baseFareDistance, data.baseFareCost);
+};
 Company.prototype.getBaseFareDistance = function()
 {
 	return this.baseFareDistance;
@@ -118,6 +133,25 @@ function TaxiUnit(id, currentPosition, speed, money, fuelPerTick)
 	this.callback = null;
 }
 extend(TaxiUnit, EntityUnit);
+TaxiUnit.prototype.toJSON = function()
+{
+    return {
+        __type:                 'TaxiUnit',
+        id:                     this.id,
+        currentPosition:        this.currentPosition,
+        destinationPosition:    this.destinationPosition,
+        speed:                  this.speed,
+        money:                  this.money,
+        fuelPerTick:            this.fuelPerTick,
+        isAvailable:            this.isAvailable,
+        isMoved:                this.isMoved,
+        client:                 this.client,
+        callback:               this.callback
+    };
+};
+TaxiUnit.revive = function(data) {
+    return new TaxiUnit(data.id, data.currentPosition, data.speed, data.money, data.fuelPerTick);
+};
 TaxiUnit.prototype.setClient = function(value)
 {
 	this.client = value;
@@ -230,6 +264,21 @@ function ClientUnit(id, posA, posB)
 	this.isWaitTaxi = false;
 }
 extend(ClientUnit, EntityUnit);
+ClientUnit.prototype.toJSON = function()
+{
+    return {
+        __type:                 'ClientUnit',
+        id:                     this.id,
+        positionStart:          this.positionStart,
+        positionDestination:    this.positionDestination,
+        inProgress:             this.inProgress,
+        isActive:               this.isActive,
+        isWaitTaxi:             this.isWaitTaxi
+    };
+};
+ClientUnit.revive = function(data) {
+    return new ClientUnit(data.id, data.positionStart, data.positionDestination);
+};
 ClientUnit.prototype.toString = function()
 {
 	return 'id: ' + this.id + ', positionStart: ' + this.positionStart + ', positionDestination: ' + this.positionDestination;

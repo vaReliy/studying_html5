@@ -74,51 +74,21 @@
         if(window.localStorage.hasOwnProperty(LS_GAME))
         {
             var savedGame = window.localStorage[LS_GAME];
-            var game = JSON.parse(savedGame);
+            var Types = {};
+            Types.GameController = GameController;
+            Types.ViewController = ViewController;
+            Types.CompanyController = CompanyController;
+            Types.Company = Company;
+            Types.TaxiUnit = TaxiUnit;
+            Types.ClientUnit = ClientUnit;
+            var game = JSON.parse(savedGame, function(key, value) {
+            return key === '' && value.hasOwnProperty('__type')
+                    ? Types[value.__type].revive(value)
+                    : this[key];
+            });
 
-            var i, savedClients, savedDrivers, restoredClients = [], restoredDrivers = [];
-            var clArr = game.companyController.company.clients;
-            for (i=0; i < clArr.length; i++)
-            {
-                var cl = clArr[i];
-                savedClients = new ClientUnit(cl.id, cl.positionStart, cl.positionDestination);
-                savedClients.inProgress = cl.inProgress;
-                savedClients.isActive = cl.isActive;
-                savedClients.isWaitTaxi = cl.isWaitTaxi;
-                restoredClients.push(savedClients);
-            }
-            var drArrWC = game.companyController.company.drivers;
-            for (i=0; i < drArrWC.length; i++)
-            {
-                var dr = drArrWC[i];
-                savedDrivers = new TaxiUnit(dr.id, dr.currentPosition, dr.speed, dr.money, dr.fuelPerTick);
-                savedDrivers.destinationPosition = dr.destinationPosition;
-                savedDrivers.isAvailable = dr.isAvailable;
-                savedDrivers.isMoved = dr.isMoved;
-                savedDrivers.callback = dr.callback;
-                cl = new ClientUnit(dr.client.id, dr.client.positionStart, dr.client.positionDestination);
-                cl.inProgress = dr.client.inProgress;
-                cl.isActive = dr.client.isActive;
-                cl.isWaitTaxi = dr.client.isWaitTaxi;
-                /*var index = restoredClients.indexOf(cl);
-                if(index != 1)
-                {
-                    savedDrivers.client = restoredClients[index];
-                }*/
-                savedDrivers.client = cl;
-                restoredDrivers.push(savedDrivers);
-            }
-
-            _gameController = new GameController(_context, WIDTH, HEIGHT, UNIT_RECT_SIDE, UNIT_RECT_SIDE);
-            _gameController.initControllers();
-            _gameController.companyController.company.clients = restoredClients;
-            _gameController.companyController.company.drivers = restoredDrivers;
-            _gameController.companyController.company.totalMoney = game.companyController.company.totalMoney;
-
-            if(window.localStorage.hasOwnProperty(LS_GAME_TT))
-            {
-                TICK_TIME = window.localStorage[LS_GAME_TT];
-            }
+            console.log(Types);
+            console.log(game);
         }
         else
         {
@@ -230,7 +200,8 @@
             {
                 if(_gameController)
                 {
-                    window.localStorage[LS_GAME] = _gameController.saveGame();
+//                    window.localStorage[LS_GAME] = _gameController.saveGame();
+                    window.localStorage[LS_GAME] = JSON.stringify(_gameController);
                     window.localStorage[LS_GAME_TT] = TICK_TIME;
                 }
                 break;

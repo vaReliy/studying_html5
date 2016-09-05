@@ -17,6 +17,22 @@ function GameController(sceneContext, sceneWidth, sceneHeight, unitRectSizeW, un
 	this.timerId = null;
 }
 GameController.prototype = Object.create(null);
+GameController.prototype.toJSON = function()
+{
+	return {
+		__type:                 'GameController',
+		scene:                  this.scene,
+		companyController:      this.companyController,
+		viewController:    		this.viewController,
+		generator:          	this.generator,
+		timerId:             	this.timerId
+	};
+};
+GameController.revive = function(data) {
+	var scene = data.scene;
+	var u = scene.unitRectSize;
+	return new GameController(scene.context, scene.width, scene.height, u.width, u.height);
+};
 GameController.prototype.initControllers = function()
 {
 	var company = this.generateCompany();
