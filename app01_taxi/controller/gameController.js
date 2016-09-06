@@ -28,10 +28,18 @@ GameController.prototype.toJSON = function()
 		timerId:             	this.timerId
 	};
 };
-GameController.revive = function(data) {
+GameController.revive = function(data, canvasContext)
+{
 	var scene = data.scene;
+	data.scene.context = canvasContext;
 	var u = scene.unitRectSize;
-	return new GameController(scene.context, scene.width, scene.height, u.width, u.height);
+	var gameController = new GameController(scene.context, scene.width, scene.height, u.width, u.height);
+	gameController.companyController = CompanyController.revive(data.companyController);
+	gameController.viewController = new ViewController(gameController.scene, gameController.companyController);
+    gameController.viewController.init();
+	gameController.generator = new Generator(this.scene);
+	gameController.timerId = data.timerId;
+	return gameController;
 };
 GameController.prototype.initControllers = function()
 {

@@ -47,8 +47,23 @@ Company.prototype.toJSON = function()
         totalMoney:         this.totalMoney
     };
 };
-Company.revive = function(data) {
-    return new Company(data.id, data.clients, data.drivers, data.baseFareDistance, data.baseFareCost);
+Company.revive = function(data)
+{
+	var c = new Company(data.id, data.clients, data.drivers, data.baseFareDistance, data.baseFareCost);
+	var length = data.clients.length, i, revivedClients = [], revivedDrivers = [];
+	for (i=0; i < length; i++)
+	{
+		revivedClients[i] = ClientUnit.revive(data.clients[i]);
+	}
+	c.clients = revivedClients;
+	length = data.drivers.length;
+	for (i=0; i < length; i++)
+	{
+		revivedDrivers[i] = TaxiUnit.revive(data.drivers[i]);
+	}
+	c.drivers = revivedDrivers;
+	c.totalMoney = data.totalMoney;
+    return c;
 };
 Company.prototype.getBaseFareDistance = function()
 {
@@ -149,8 +164,16 @@ TaxiUnit.prototype.toJSON = function()
         callback:               this.callback
     };
 };
-TaxiUnit.revive = function(data) {
-    return new TaxiUnit(data.id, data.currentPosition, data.speed, data.money, data.fuelPerTick);
+TaxiUnit.revive = function(data)
+{
+	var t = new TaxiUnit(data.id, data.currentPosition, data.speed, data.money, data.fuelPerTick);
+	t.currentPosition = PositionPoint.revive(data.currentPosition);
+	t.destinationPosition = PositionPoint.revive(data.destinationPosition);
+	t.isAvailable = data.isAvailable;
+	t.isMoved = data.isMoved;
+	t.callback = data.callback;
+	t.client = ClientUnit.revive(data.client);
+    return t;
 };
 TaxiUnit.prototype.setClient = function(value)
 {
@@ -276,8 +299,15 @@ ClientUnit.prototype.toJSON = function()
         isWaitTaxi:             this.isWaitTaxi
     };
 };
-ClientUnit.revive = function(data) {
-    return new ClientUnit(data.id, data.positionStart, data.positionDestination);
+ClientUnit.revive = function(data)
+{
+	var c = new ClientUnit(data.id, data.positionStart, data.positionDestination);
+	c.positionStart = PositionPoint.revive(data.positionStart);
+	c.positionDestination = PositionPoint.revive(data.positionDestination);
+	c.inProgress = data.inProgress;
+	c.isActive = data.isActive;
+	c.isWaitTaxi = data.isWaitTaxi;
+    return c;
 };
 ClientUnit.prototype.toString = function()
 {
@@ -328,6 +358,18 @@ function PositionPoint(x, y)
 	this.y = y;
 }
 PositionPoint.prototype = Object.create(null);
+PositionPoint.prototype.toJSON = function()
+{
+	return {
+		__type:	'PositionPoint',
+		x:      this.x,
+		y:      this.y
+	};
+};
+PositionPoint.revive = function(data)
+{
+	return new PositionPoint(data.x, data.y);
+};
 PositionPoint.prototype.toString = function()
 {
 	return 'x: ' + this.x + ', y: ' + this.y;

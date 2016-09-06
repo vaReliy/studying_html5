@@ -12,8 +12,17 @@ CompanyController.prototype.toJSON = function()
 		driversWithClients:		this.driversWithClients
 	};
 };
-CompanyController.revive = function(data) {
-	return new CompanyController(data.company);
+CompanyController.revive = function(data)
+{
+    var companyController = new CompanyController( Company.revive(data.company) );
+    var length = data.driversWithClients.length;
+    var revivedDriversWithClient = [];
+    for (var i=0; i < length; i++)
+    {
+        revivedDriversWithClient[i] = TaxiUnit.revive(data.driversWithClients[i]);
+    }
+    companyController.driversWithClients = revivedDriversWithClient;
+	return companyController;
 };
 CompanyController.prototype.getDriversWithClients = function()
 {

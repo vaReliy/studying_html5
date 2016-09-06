@@ -22,8 +22,12 @@ ViewController.prototype.toJSON = function()
 		images:		this.images
 	};
 };
-ViewController.revive = function(data) {
-	return new ViewController(data.scene, data.companyController);
+ViewController.revive = function(data, companyController)
+{
+	var vc = new ViewController(data.scene, companyController);
+    vc.resources = data.resources;
+    vc.images = data.images;
+    return vc;
 };
 ViewController.prototype.draw = function()
 {

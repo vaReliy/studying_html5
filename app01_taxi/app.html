@@ -74,21 +74,11 @@
         if(window.localStorage.hasOwnProperty(LS_GAME))
         {
             var savedGame = window.localStorage[LS_GAME];
-            var Types = {};
-            Types.GameController = GameController;
-            Types.ViewController = ViewController;
-            Types.CompanyController = CompanyController;
-            Types.Company = Company;
-            Types.TaxiUnit = TaxiUnit;
-            Types.ClientUnit = ClientUnit;
-            var game = JSON.parse(savedGame, function(key, value) {
-            return key === '' && value.hasOwnProperty('__type')
-                    ? Types[value.__type].revive(value)
+            _gameController = JSON.parse(savedGame, function(key, value) {
+            return key === '' && value.hasOwnProperty('__type') && value.__type === 'GameController'
+                    ? GameController.revive(value, _context)
                     : this[key];
             });
-
-            console.log(Types);
-            console.log(game);
         }
         else
         {
