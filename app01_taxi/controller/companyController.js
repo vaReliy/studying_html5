@@ -28,11 +28,11 @@ CompanyController.prototype.getDriversWithClients = function()
 {
 	return this.driversWithClients;
 };
-CompanyController.prototype.setDriversWithClients = function(value)
+CompanyController.prototype.addDriverToDriversWithClients = function(value)
 {
 	this.driversWithClients.push(value);
 };
-CompanyController.prototype.removeDriversWithClients = function(driver)
+CompanyController.prototype.removeDriverFromDriversWithClients = function(driver)
 {
 	var origArr = this.driversWithClients;
 	for (var i=0; i < origArr.length; i++)
@@ -43,10 +43,6 @@ CompanyController.prototype.removeDriversWithClients = function(driver)
 		}
 	}
 	this.driversWithClients = origArr;
-};
-CompanyController.prototype.getAllClients = function()
-{
-	return this.company.clients;
 };
 CompanyController.prototype.getFreeClients = function()
 {
@@ -135,9 +131,9 @@ CompanyController.prototype.setNearerClientToDriver = function(clientsArray, dri
 		}
 	}
 	clientsArray[index].setIsWaitTaxi(true);
-	driver.setClient(clientsArray[index]);
+	driver.setClientId(clientsArray[index].id);
 	driver.moveTo(clientsArray[index].getPositionStart(), callback);
-	this.setDriversWithClients(driver);
+	this.addDriverToDriversWithClients(driver);
 	return clientsArray[index];
 };
 CompanyController.prototype.calculateDistanceBetweenTwoPoints = function(pointA, pointB)
@@ -145,27 +141,17 @@ CompanyController.prototype.calculateDistanceBetweenTwoPoints = function(pointA,
 	var x1 = pointA.x, y1 = pointA.y, x2 = pointB.x, y2 = pointB.y;
 	return Math.sqrt( (Math.pow( (x2 - x1), 2 )) + (Math.pow( (y2 - y1), 2 )) );
 };
-CompanyController.prototype.makeClientToComplete = function(driver)
+CompanyController.prototype.makeClientToComplete = function(driver, client)
 {
 	/* update money */
-	var fare = this.calculateFare(driver.getClient());
+	var fare = this.calculateFare(client);
 	fare = Math.round(fare * 100) / 100;
 	var taxiProfit = Math.round(FARE_PART_DRIVER * fare * 100) / 100;
 	var companyProfit = Math.round(FARE_PART_COMPANY * fare * 100) / 100;
 	driver.addMoney(taxiProfit);
 	this.company.addMoney(companyProfit);
-
-	driver.getClient().setIsActive(false);
-	driver.getClient().setInProgress(false);
+	this.removeDriverFromDriversWithClients(driver);
 	driver.setIsAvailable(true);
-	var ind = this.getAllClients().indexOf(driver.getClient());
-	if (ind != -1)
-	{
-		this.getAllClients()[ind].setIsActive(false);
-		this.getAllClients()[ind].setInProgress(false);
-		//this.getAllClients()[ind].setIsWaitTaxi(false);
-	}
-	this.removeDriversWithClients(driver);
 };
 CompanyController.prototype.calculateDriverCurrentPosition = function(driver, deltaRT)
 {

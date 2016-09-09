@@ -75,7 +75,7 @@ ViewController.prototype.draw = function()
 	{
 		var driverPos = driversArray[i].getCurrentPosition();
 
-		if (driversArray[i].getClient() && driversArray[i].getClient().getInProgress())
+		if (driversArray[i].getIsMoved())
 		{
 			sprite = this.images.taxiInProgress;
 			sprite.updatePosition(driverPos.x, driverPos.y);

@@ -1,7 +1,9 @@
+var _globalIdCount = 0;
+
 //class EntityUnit
-function EntityUnit(id)
+function EntityUnit()
 {
-	this.id = id;
+	this.id = ++_globalIdCount;
 }
 EntityUnit.prototype = Object.create(null);
 EntityUnit.prototype.getId = function()
@@ -77,6 +79,19 @@ Company.prototype.getClients = function()
 {
 	return this.clients;
 };
+Company.prototype.getClientById = function(id)
+{
+	var client, len = this.clients.length;
+	for (var i=0; i < len; i++)
+	{
+		if (this.clients[i].id === id)
+		{
+			client = this.clients[i];
+			break;
+		}
+	}
+	return client;
+};
 Company.prototype.getDrivers = function()
 {
 	return this.drivers;
@@ -134,9 +149,9 @@ Company.prototype.addMoney = function(value)
 
 
 //class TaxiUnit
-function TaxiUnit(id, currentPosition, speed, money, fuelPerTick)
+function TaxiUnit(currentPosition, speed, money, fuelPerTick)
 {
-	EntityUnit.call(this, id);
+	EntityUnit.call(this);
 	this.currentPosition = currentPosition;
 	this.destinationPosition = null;
 	this.speed = speed;
@@ -144,7 +159,7 @@ function TaxiUnit(id, currentPosition, speed, money, fuelPerTick)
 	this.fuelPerTick = fuelPerTick;
 	this.isAvailable = true;
 	this.isMoved = false;
-	this.client = null;
+	this.clientId = '';
 	this.callback = null;
 }
 extend(TaxiUnit, EntityUnit);
@@ -160,28 +175,29 @@ TaxiUnit.prototype.toJSON = function()
         fuelPerTick:            this.fuelPerTick,
         isAvailable:            this.isAvailable,
         isMoved:                this.isMoved,
-        client:                 this.client,
+        clientId:               this.clientId,
         callback:               this.callback
     };
 };
 TaxiUnit.revive = function(data)
 {
-	var t = new TaxiUnit(data.id, data.currentPosition, data.speed, data.money, data.fuelPerTick);
+	var t = new TaxiUnit(data.currentPosition, data.speed, data.money, data.fuelPerTick);
+	t.id = data.id;
 	t.currentPosition = PositionPoint.revive(data.currentPosition);
 	t.destinationPosition = PositionPoint.revive(data.destinationPosition);
 	t.isAvailable = data.isAvailable;
 	t.isMoved = data.isMoved;
 	t.callback = data.callback;
-	t.client = ClientUnit.revive(data.client);
+	t.clientId = data.clientId;
     return t;
 };
-TaxiUnit.prototype.setClient = function(value)
+TaxiUnit.prototype.setClientId = function(value)
 {
-	this.client = value;
+	this.clientId = value;
 };
-TaxiUnit.prototype.getClient = function()
+TaxiUnit.prototype.getClientId = function()
 {
-	return this.client;
+	return this.clientId;
 };
 TaxiUnit.prototype.getCurrentPosition = function()
 {
@@ -243,15 +259,15 @@ TaxiUnit.prototype.moveTo = function(destinationPosition, callback)
 		this.callback = callback;
 	}
 };
-TaxiUnit.prototype.inClientPositionStart = function()
+TaxiUnit.prototype.inClientPositionStart = function(client)
 {
-	return (this.getClient() && this.getCurrentPosition().x == this.getClient().getPositionStart().x &&
-		this.getCurrentPosition().y == this.getClient().getPositionStart().y);
+	return (client && this.getClientId() && this.getClientId() == client.getId() && this.getCurrentPosition().x == client.getPositionStart().x &&
+		this.getCurrentPosition().y == client.getPositionStart().y);
 };
-TaxiUnit.prototype.inClientPositionDestination = function()
+TaxiUnit.prototype.inClientPositionDestination = function(client)
 {
-	return (this.getClient() && this.getCurrentPosition().x == this.getClient().getPositionDestination().x &&
-		this.getCurrentPosition().y == this.getClient().getPositionDestination().y);
+	return (client && this.getClientId() && this.getClientId() == client.getId() && this.getCurrentPosition().x == client.getPositionDestination().x &&
+	this.getCurrentPosition().y == client.getPositionDestination().y);
 };
 TaxiUnit.prototype.getMoney = function()
 {
@@ -277,9 +293,9 @@ TaxiUnit.prototype.printInfo = function()
 
 
 //class ClientUnit
-function ClientUnit(id, posA, posB)
+function ClientUnit(posA, posB)
 {
-	EntityUnit.call(this, id);
+	EntityUnit.call(this);
 	this.positionStart = posA;
 	this.positionDestination = posB;
 	this.inProgress = false;
@@ -301,7 +317,8 @@ ClientUnit.prototype.toJSON = function()
 };
 ClientUnit.revive = function(data)
 {
-	var c = new ClientUnit(data.id, data.positionStart, data.positionDestination);
+	var c = new ClientUnit(data.positionStart, data.positionDestination);
+	c.id = data.id;
 	c.positionStart = PositionPoint.revive(data.positionStart);
 	c.positionDestination = PositionPoint.revive(data.positionDestination);
 	c.inProgress = data.inProgress;
@@ -316,6 +333,10 @@ ClientUnit.prototype.toString = function()
 ClientUnit.prototype.printInfo = function()
 {
 	return 'id: ' + this.id;
+};
+ClientUnit.prototype.setPositionStart = function(positionStart)
+{
+	this.positionStart = positionStart;
 };
 ClientUnit.prototype.getPositionStart = function()
 {

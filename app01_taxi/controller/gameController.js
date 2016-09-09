@@ -66,7 +66,7 @@ GameController.prototype.generateCompany = function()
 };
 GameController.prototype.generateOneClient = function()
 {
-	return new ClientUnit(this.generator.getRandomName(), this.generator.getPositionPoint(), this.generator.getPositionPoint());
+	return new ClientUnit(this.generator.getPositionPoint(), this.generator.getPositionPoint());
 };
 GameController.prototype.generateOneDriver = function()
 {
@@ -74,7 +74,7 @@ GameController.prototype.generateOneDriver = function()
 	var startMoney = this.generator.getRandomIntValue(150, 350);
 	var fuelPerTick = this.generator.getRandomNumber(0.8, 1.2);
 	fuelPerTick = Math.round(fuelPerTick * 100) / 100;
-	return new TaxiUnit(this.generator.getRandomName() + " on '" + this.generator.getRandomAutoBrand() + "'", this.generator.getPositionPoint(), speed, startMoney, fuelPerTick);
+	return new TaxiUnit(this.generator.getPositionPoint(), speed, startMoney, fuelPerTick);
 };
 GameController.prototype.runTimerClientsGeneration = function()
 {
@@ -106,31 +106,20 @@ GameController.prototype.update = function()
 		var less = freeDrivers.length - freeClients.length <= 0 ? freeDrivers.length : freeClients.length;
 		for(i=0; i < less; i++)
 		{
-			var client = companyController.setNearerClientToDriver(freeClients, freeDrivers[i], onClientPosition);
-
-			//todo: make global client to 'wait' status?
-			var index = companyController.getAllClients().indexOf(client);
-			if (index != -1)
-				companyController.company.getClients()[index].setIsWaitTaxi(true);
+			companyController.setNearerClientToDriver(freeClients, freeDrivers[i], onClientPosition);
 		}
 
-		var drivers;
+		var drivers, currentClient;
 		function onClientPosition()
 		{
 			drivers = companyController.getDriversWithClients();
 			for(i=0; i < drivers.length; i++)
 			{
-				if(drivers[i].inClientPositionStart())
+				currentClient = companyController.company.getClientById(drivers[i].getClientId());
+				if(currentClient && drivers[i].inClientPositionStart(currentClient))
 				{
-					/*var index = companyController.getAllClients().indexOf(drivers[i].getClient());
-					if (index != -1)
-						companyController.company.getClients()[index].setIsWaitTaxi(false);*/
-
-					clientPos = drivers[i].getClient().getPositionDestination();
-					drivers[i].getClient().setInProgress(true);
-
-					//todo:set client setIsWaitTaxi
-					//drivers[i].getClient().setIsWaitTaxi(false);
+					clientPos = currentClient.getPositionDestination();
+					currentClient.setInProgress(true);
 					drivers[i].moveTo(clientPos, onClientPositionDestination);
 				}
 			}
@@ -141,10 +130,15 @@ GameController.prototype.update = function()
 			drivers = companyController.getDriversWithClients();
 			for(i = 0; i < drivers.length; i++)
 			{
-				if(drivers[i].inClientPositionDestination())
-					companyController.makeClientToComplete(drivers[i]);
+				currentClient = companyController.company.getClientById(drivers[i].getClientId());
+				if(drivers[i].inClientPositionDestination(currentClient))
+				{
+					companyController.makeClientToComplete(drivers[i], currentClient);
+					currentClient.setIsActive(false);
+					currentClient.setInProgress(false);
+					currentClient.setIsWaitTaxi(false);
+				}
 			}
-			//companyController.company.printInfo();
 		}
 	}
 	else if(hasMovedDrivers)
@@ -180,7 +174,15 @@ GameController.prototype.driverRemove = function()
 	var drivers = this.companyController.company.drivers;
 	var index = this.generator.getRandomIntValue(0, drivers.length);
 	var driver = this.companyController.company.drivers[index];
-	driver.getClient().setIsActive(false);
+	var currentClient = this.companyController.company.getClientById(driver.getClientId());
+	if(currentClient)
+	{
+		currentClient.setIsActive(true);
+		currentClient.setInProgress(false);
+		currentClient.setIsWaitTaxi(false);
+		currentClient.setPositionStart(driver.getCurrentPosition());
+		this.companyController.removeDriverFromDriversWithClients(driver);
+	}
 	this.companyController.company.drivers.splice(index, 1);
 };
 GameController.prototype.saveGame = function()
