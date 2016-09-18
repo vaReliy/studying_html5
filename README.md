@@ -14,5 +14,6 @@ project for learning html5
 - визуальный интерфейс (canvas);
 - функцию сохранения игры (localstorage / IndexedDB);
 - возможность изменять время обновления мира (тик).
+
 # app02_mario
 Идея: написать на JS (canvas) один (первый) уровень всемирно известной игры dandy 'Mario', использую PIXI JS.
