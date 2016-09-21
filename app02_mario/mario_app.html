@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Mario</title>
+    <script src="core/pixi.js"></script>
     <script src="game/gameConstants.js"></script>
+    <script src="game/viewController.js"></script>
     <script src="game/gameController.js"></script>
     <script src="core/gameLoop.js"></script>
 </head>
 <body>
     <script>
-        new GameLoop(document, GameController);
+        window.onload = function()
+        {
+            StartGameLoop(document, GameController);
+        };
     </script>
 </body>
 </html>

@@ -1,0 +1,92 @@
+{"frames": {
+
+"big_duck.png":
+{
+	"frame": {"x":711,"y":252,"w":65,"h":89},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":40,"w":65,"h":89},
+	"sourceSize": {"w":65,"h":129}
+},
+"big_jump.png":
+{
+	"frame": {"x":644,"y":2,"w":65,"h":129},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":65,"h":129},
+	"sourceSize": {"w":65,"h":129}
+},
+"big_stand.png":
+{
+	"frame": {"x":644,"y":133,"w":65,"h":129},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":65,"h":129},
+	"sourceSize": {"w":65,"h":129}
+},
+"big_w1.png":
+{
+	"frame": {"x":644,"y":264,"w":65,"h":129},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":65,"h":129},
+	"sourceSize": {"w":65,"h":129}
+},
+"big_w2.png":
+{
+	"frame": {"x":711,"y":129,"w":65,"h":121},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":8,"w":65,"h":121},
+	"sourceSize": {"w":65,"h":129}
+},
+"big_w3.png":
+{
+	"frame": {"x":711,"y":2,"w":57,"h":125},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":4,"y":4,"w":57,"h":125},
+	"sourceSize": {"w":65,"h":129}
+},
+"little_w1.png":
+{
+	"frame": {"x":770,"y":2,"w":61,"h":64},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":65,"w":61,"h":64},
+	"sourceSize": {"w":65,"h":129}
+},
+"little_w2.png":
+{
+	"frame": {"x":778,"y":132,"w":53,"h":60},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":6,"y":69,"w":53,"h":60},
+	"sourceSize": {"w":65,"h":129}
+},
+"little_w3.png":
+{
+	"frame": {"x":778,"y":68,"w":45,"h":62},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":14,"y":67,"w":45,"h":62},
+	"sourceSize": {"w":65,"h":129}
+},
+"mario_preloader.jpg":
+{
+	"frame": {"x":2,"y":2,"w":640,"h":400},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":640,"h":400},
+	"sourceSize": {"w":640,"h":400}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "mario_atlas.png",
+	"format": "RGBA8888",
+	"size": {"w":833,"h":404},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d9e74254e18138bdafae5aea7eaf226f:f11052f41c70df0ea4d58e0eb48b13f1:0b3dfc18154198ee6aac637f1d4902a6$"
+}
+}

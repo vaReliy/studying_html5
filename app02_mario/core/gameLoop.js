@@ -1,27 +1,33 @@
-function GameLoop(document, gameControllerName)
+function StartGameLoop(document, gameControllerName)
 {
     var _currentRenderTime = 0;
     var _deltaRenderTime = 0;
     var _lastRenderTime = 0;
     var _prevTickTime = 0;
-    var _canvas, _context, _gameController;
+    var _stage, _renderer, _gameController;
 
-    createCanvas();
+    createStage();
     initGame();
     render();
 
-    function createCanvas()
+    function createStage()
     {
-        _canvas = document.createElement("canvas");
-        _canvas.width = GameConstants.WIDTH;
-        _canvas.height = GameConstants.HEIGHT;
-        _context = _canvas.getContext("2d");
-        document.body.appendChild( _canvas );
+	    _stage = new PIXI.Container();
+	    _renderer = PIXI.autoDetectRenderer(GameConstants.WIDTH, GameConstants.HEIGHT);
+	    document.body.appendChild(_renderer.view);
     }
 
     function initGame()
     {
-        _gameController = new gameControllerName();
+        _gameController = new gameControllerName(_stage, _renderer, PIXI);
+	    if (_gameController instanceof GameController)
+	    {
+		    _gameController.init();
+	    }
+	    else
+	    {
+		    console.log('ERROR! ');
+	    }
     }
 
     function render()
@@ -38,9 +44,6 @@ function GameLoop(document, gameControllerName)
 
     function globalRender()
     {
-        _context.clearRect(0, 0, GameConstants.WIDTH, GameConstants.HEIGHT);
-        _context.strokeRect(0, 0, GameConstants.WIDTH, GameConstants.HEIGHT);
-
         _gameController.draw();
     }
 
