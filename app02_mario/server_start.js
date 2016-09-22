@@ -4,7 +4,7 @@ var file = new static.Server('.');
 
 http.createServer(function(req, res) {
   file.serve(req, res);
-}).listen(63342);
+}).listen(8081);
 
-console.log('Server running on port 63342');
-console.log('http://localhost:63342/mario_app.html');
+console.log('Server running on port 8081');
+console.log('http://localhost:8081/mario_app.html');
