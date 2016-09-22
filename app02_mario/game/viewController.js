@@ -31,12 +31,8 @@ ViewController.prototype.loadTextures = function()
 ViewController.prototype.applyTextures = function()
 {
 	var sprite = new this.Sprite(this.resources[this.prefix + 'mario_atlas.json'].textures['mario_preloader.jpg']);
-	sprite.anchor.x = sprite.width / 2;
-	sprite.anchor.y = sprite.height / 2;
+	sprite.anchor.set(0.5, 0.5);
 	sprite.x = GameConstants.WIDTH/2;
 	sprite.y = GameConstants.HEIGHT/2;
-	sprite.scale.x = 1.2;
-	sprite.scale.y = 1.2;
-	console.log('sprite.x = ' + sprite.x + ', sprite.y = ' + sprite.y);
 	this.stage.addChild(sprite);
 };
