@@ -30,90 +30,72 @@ GameController.prototype.draw = function()
 
 GameController.prototype.update = function()
 {
-    if(this.player.getIsChangedPosition())
-    {
-	    this.player.updatePosition();
-	    //this.player.setIsChangedPosition(false);
-    }
+	this.player.updatePosition();
 };
 
-GameController.prototype.initKeyboard = function(player)
+GameController.prototype.initKeyboard = function(/*Player*/player)
 {
-	var mc = player.getGraphics();
+	var left = getKeyFromKeyboard(Key.LEFT),
+		up = getKeyFromKeyboard(Key.UP),
+		right = getKeyFromKeyboard(Key.RIGHT),
+		down = getKeyFromKeyboard(Key.DOWN);
 
-	var left = keyboard(Keys.LEFT),
-		up = keyboard(Keys.UP),
-		right = keyboard(Keys.RIGHT),
-		down = keyboard(Keys.DOWN);
-
-	//Left
 	left.press = function()
 	{
-		mc.vx = -Velociti.SHIFT;
-		mc.vy = Velociti.ZERO;
-		player.setIsChangedPosition(true);
+		player.vx = -Velocity.SHIFT;
+		player.vy = Velocity.ZERO;
 	};
 
 	left.release = function()
 	{
-		if(!right.isDown && mc.vy === Velociti.ZERO)
+		if(!right.isDown && player.vy === Velocity.ZERO)
 		{
-			mc.vx = Velociti.ZERO;
-			player.setIsChangedPosition(true);
+			player.vx = Velocity.ZERO;
 		}
 	};
 
-	//Up
 	up.press = function()
 	{
-		mc.vy = -Velociti.SHIFT;
-		mc.vx = Velociti.ZERO;
-		player.setIsChangedPosition(true);
+		player.vy = -Velocity.SHIFT;
+		player.vx = Velocity.ZERO;
 	};
 	up.release = function()
 	{
-		if(!down.isDown && mc.vx === Velociti.ZERO)
+		if(!down.isDown && player.vx === Velocity.ZERO)
 		{
-			mc.vy = Velociti.ZERO;
-			player.setIsChangedPosition(true);
+			player.vy = Velocity.ZERO;
 		}
 	};
 
-	//Right
 	right.press = function()
 	{
-		mc.vx = Velociti.SHIFT;
-		mc.vy = Velociti.ZERO;
-		player.setIsChangedPosition(true);
+		player.vx = Velocity.SHIFT;
+		player.vy = Velocity.ZERO;
 	};
 	right.release = function()
 	{
-		if(!left.isDown && mc.vy === Velociti.ZERO)
+		if(!left.isDown && player.vy === Velocity.ZERO)
 		{
-			mc.vx = Velociti.ZERO;
-			player.setIsChangedPosition(true);
+			player.vx = Velocity.ZERO;
 		}
 	};
 
-	//Down
 	down.press = function()
 	{
-		mc.vy = Velociti.SHIFT;
-		mc.vx = Velociti.ZERO;
-		player.setIsChangedPosition(true);
+		player.vy = Velocity.SHIFT;
+		player.vx = Velocity.ZERO;
 	};
 	down.release = function()
 	{
-		if(!up.isDown && mc.vx === Velociti.ZERO)
+		if(!up.isDown && player.vx === Velocity.ZERO)
 		{
-			mc.vy = Velociti.ZERO;
-			player.setIsChangedPosition(true);
+			player.vy = Velocity.ZERO;
 		}
 	};
 };
 
 
-function keyboard(keyCode)
+function getKeyFromKeyboard(/*number*/keyCode)
 {
 	var key = {};
 	key.code = keyCode;
@@ -125,6 +107,7 @@ function keyboard(keyCode)
 	//The `downHandler`
 	key.downHandler = function(event)
 	{
+		console.log('down: ' + event.keyCode);
 		if(event.keyCode === key.code)
 		{
 			if(key.isUp && key.press)
@@ -140,6 +123,7 @@ function keyboard(keyCode)
 	//The `upHandler`
 	key.upHandler = function(event)
 	{
+		console.log('up: ' + event.keyCode);
 		if(event.keyCode === key.code)
 		{
 			if(key.isDown && key.release)
@@ -153,7 +137,7 @@ function keyboard(keyCode)
 	};
 
 	//Attach event listeners
-	window.addEventListener("keydown", key.downHandler.bind(key), false);
-	window.addEventListener("keyup", key.upHandler.bind(key), false);
+	window.addEventListener("keydown", key.downHandler, false);
+	window.addEventListener("keyup", key.upHandler, false);
 	return key;
 }

@@ -9,13 +9,13 @@ function Background(/*PIXI*/pixi, /*Container*/stage)
 Background.prototype = Object.create(null);
 Background.prototype.init = function()
 {
-	for(var i = 0; i < Map.WORD_SIZE; i++)
+	for(var i = 0; i < Map.WORLD_SIZE; i++)
 	{
-		for(var j = 0; j < Map.WORD_SIZE; j++)
+		for(var j = 0; j < Map.WORLD_SIZE; j++)
 		{
 			var x = i * GameConstants.UNIT_RECT_SIDE;
 			var y = j * GameConstants.UNIT_RECT_SIDE;
-			var color = this.getColor(Map.WORD[j][i]);
+			var color = this.getColor(Map.WORLD[j][i]);
 			var tile = new Tile(this.pixi, x, y, color, this.globalAlpha);
 			this.tiles.push(tile);
 			this.stage.addChild(tile.getGraphics());
